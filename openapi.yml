@@ -1,0 +1,376 @@
+openapi: '3.0.2'
+info:
+  title: Pushserver API
+  version: "0.0"
+  description: HTTP API for the open pushserver implementation.
+
+paths:
+  /user:
+    get:
+      tags: 
+        - user
+      summary: Return all users.
+      responses:
+        '200':
+          description: A list of all users.
+          content:
+            application/json:    
+              schema:
+                $ref: "#/components/schemas/Users"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      tags: 
+        - user
+      summary: Add a user.
+      requestBody:
+        description: the user to add
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        '200':
+          description: Ok.
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+          
+  /user/{id}:
+    get:
+      tags: 
+        - user
+      summary: Get a user.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the user to retrieve
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ok.
+          content:
+            application/json:    
+              schema:
+                $ref: "#/components/schemas/User"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      operationId: api.user.update
+      tags: 
+        - user
+      summary: Update a user.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the user to update
+          schema:
+            type: string
+      requestBody:
+        description: Updated user details.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+          
+      responses:
+        '200':
+          description: Ok.
+          content:
+            application/json:    
+              schema:
+                $ref: "#/components/schemas/User"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags:
+        - user
+      summary: Delete a user.
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          description: The id of the user to delete.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ok.
+  
+  /client:
+    get:
+      tags: 
+        - client
+      summary: Return all clients.
+      responses:
+        '200':
+          description: A list of all clients for the current user.
+          content:
+            application/json:    
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Client"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      tags:
+        - client
+      summary: Create a new client.
+      requestBody:
+        description: Client to add
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Client"
+      responses:
+        '200':
+          description: Ok.
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+                
+  /client/{id}:
+    put:
+      tags:
+        - client
+      summary: Update a client.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the client to update
+          schema:
+            type: string
+      requestBody:
+        description: Updated client details.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Client"
+          
+      responses:
+        '200':
+          description: Ok.
+          content:
+            application/json:    
+              schema:
+                $ref: "#/components/schemas/User"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags:
+        - client
+      summary: Delete a client.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the client to delete
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ok.
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+                
+  /application:
+    get:
+      tags:
+        - application
+      summary: Get a list of all registered applications.
+      responses:
+        '200':
+          description: Ok.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Application"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      tags:
+        - application
+      summary: Register a new application.
+      requestBody:
+        description: Application to add
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Application"
+      responses:
+        '200':
+          description: Ok.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pushtoken"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+                
+  /application/{id}:
+    delete:
+      tags:
+        - application
+      summary: Delete an application.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the app to delete.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ok.
+      
+    
+  /message:
+    post:
+      summary: Post a message.
+      tags: [message]
+      requestBody:
+        description: Message to post.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Message"
+      responses:
+        '200':
+          description: Message posted.
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      
+  
+components:
+  schemas:
+    User:
+      required:
+        - id
+        - name
+      properties:
+        id:
+          readOnly: true
+          type: integer
+          format: int64
+        name:
+          type: string
+    Users:
+      type: array
+      items:
+        $ref: "#/components/schemas/User"
+        
+    Application:
+      description: A registered application installed on a client
+      required: 
+        - id
+        - name
+      properties:
+        id:
+          readOnly: true
+          type: integer
+          format: int64
+        name:
+          example: "riot-android"
+          type: string
+        
+    Client:
+      description: A mobile client
+      required:
+        - id
+        - name
+      properties:
+        id:
+          readOnly: true
+          type: integer
+          format: int64
+        name:
+          example: "Phone 1"
+          type: string
+          
+    Pushtoken:
+      description: Token to target a mobile application.
+      example: "8904j76gkjlsfdhalSKL"
+      type: string
+      
+    Message:
+      required: 
+        - body
+        - target
+      properties:
+        subject:
+          example: "Message Subject"
+          type: string
+        body:
+          example: "Long message text goes here..."
+          type: string
+        target:
+          $ref: "#/components/schemas/Pushtoken"
+        priority:
+          type: string
+          enum: [NORMAL, HIGH]
+          
+    Error:
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
