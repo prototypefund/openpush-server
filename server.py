@@ -3,10 +3,13 @@
 import socket, select
 import sys, signal
 
+
 def signal_handler(sig, frame):
         print('\nShutting down!')
         serversocket.close()
         sys.exit(0)
+
+
 signal.signal(signal.SIGINT, signal_handler)
 
 PORT=5055

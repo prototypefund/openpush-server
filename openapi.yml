@@ -35,8 +35,12 @@ paths:
             schema:
               $ref: "#/components/schemas/User"
       responses:
-        '200':
-          description: Ok.
+        '201':
+          description: Created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
         default:
           description: unexpected error
           content:
@@ -90,8 +94,8 @@ paths:
               $ref: "#/components/schemas/User"
           
       responses:
-        '200':
-          description: Ok.
+        '201':
+          description: Created.
           content:
             application/json:    
               schema:
@@ -114,7 +118,7 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        '204':
           description: Ok.
   
   /client:
@@ -302,13 +306,20 @@ components:
       required:
         - id
         - name
+        - password
       properties:
         id:
           readOnly: true
           type: integer
           format: int64
+          example: 783
         name:
           type: string
+          example: "User1"
+        password:
+          writeOnly: true
+          format: string
+          example: "SuperPassword123"
     Users:
       type: array
       items:
