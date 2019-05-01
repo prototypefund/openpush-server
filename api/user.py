@@ -45,7 +45,18 @@ def post(body):
 
 
 def update(id, body):
-    return NoContent, 200
+    name = body['name']
+    password = body['password']
+    try:
+        user = User.query.filter_by(id=id).one()
+    except sqlalchemy.orm.exc.NoResultFound:
+        return NoContent, 404
+    from argon2 import PasswordHasher
+    ph = PasswordHasher()
+    user.password = ph.hash(password)
+    user.name = name
+    db.session.commit()
+    return jsonify(user.as_response()), 200
 
 
 def get(id):

@@ -94,7 +94,7 @@ paths:
               $ref: "#/components/schemas/User"
           
       responses:
-        '201':
+        '200':
           description: Created.
           content:
             application/json:    
