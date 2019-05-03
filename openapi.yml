@@ -226,6 +226,8 @@ paths:
                 
   /application:
     get:
+      security:
+        - client_key: []
       tags:
         - application
       summary: Get a list of all registered applications.
@@ -245,6 +247,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
     post:
+      security:
+        - client_key: []
       tags:
         - application
       summary: Register a new application.
@@ -256,12 +260,12 @@ paths:
             schema:
               $ref: "#/components/schemas/Application"
       responses:
-        '200':
-          description: Ok.
+        '201':
+          description: Created.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Pushtoken"
+                $ref: "#/components/schemas/Application"
         default:
           description: unexpected error
           content:
@@ -271,6 +275,8 @@ paths:
                 
   /application/{id}:
     delete:
+      security:
+        - client_key: []
       tags:
         - application
       summary: Delete an application.
@@ -282,12 +288,14 @@ paths:
           schema:
             type: string
       responses:
-        '200':
-          description: Ok.
+        '204':
+          description: Deleted.
       
     
   /message:
     post:
+      security:
+        - routing_token: []
       summary: Post a message.
       tags: [message]
       requestBody:
@@ -310,11 +318,16 @@ paths:
   
 components:
   securitySchemes:
-    api_key:
+    client_key:
       type: apiKey
       name: X-Openpush-Key
       in: header
-      x-apikeyInfoFunc: auth.apikey_auth
+      x-apikeyInfoFunc: auth.clientkey_auth
+    routing_token:
+      type: apiKey
+      name: X-Openpush-Key
+      in: header
+      x-apikeyInfoFunc: auth.routing_token_auth
     basic_auth:
       type: http
       scheme: basic
@@ -355,6 +368,7 @@ components:
       required: 
         - id
         - name
+        - routing_token
       properties:
         id:
           readOnly: true
@@ -363,7 +377,12 @@ components:
         name:
           example: "riot-android"
           type: string
-        
+        routing_token:
+          readOnly: true
+          description: Token to target a mobile application.
+          example: "8904j76gkjlsfdhalSKL"
+          type: string
+
     Client:
       description: A mobile client
       required:

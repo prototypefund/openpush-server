@@ -42,7 +42,7 @@ class Client(db.Model):
 class Application(db.Model):
     __tablename__ = 'application'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80), unique=True, nullable=False)
+    name = db.Column(db.String(80), nullable=False)
     client_id = db.Column(db.Integer, db.ForeignKey('client.id'), nullable=False)
     client = db.relationship('Client', back_populates='applications')
     routing_token = db.Column(db.String(80), unique=True, nullable=False)
