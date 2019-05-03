@@ -2,6 +2,7 @@ from flask import jsonify
 from connexion import NoContent
 from orm import db, User, Client
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm.exc import NoResultFound
 import secrets
 
 # Using connexion automatic routing
@@ -49,8 +50,22 @@ def post(body, user):
 
 
 def put(id, body):
-    return NoContent, 200
+    name = body['name']
+    try:
+        client = Client.query.filter_by(id=id).one()
+    except NoResultFound:
+        return NoContent, 404
+    client.name = name
+    db.session.commit()
+    return jsonify(client.as_response()), 200
 
 
 def delete(id):
-    return NoContent, 200
+    try:
+        db.session.delete(Client.query.filter_by(id=id).one())
+        db.session.commit()
+    except NoResultFound:
+        return NoContent, 404
+    except SQLAlchemyError:
+        return NoContent, 500
+    return NoContent, 204
