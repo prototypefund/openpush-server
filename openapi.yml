@@ -4,10 +4,13 @@ info:
   version: "0.0"
   description: HTTP API for the open pushserver implementation.
 
+security:
+  - basic_auth: []
+
 paths:
   /user:
     get:
-      tags: 
+      tags:
         - user
       summary: Return all users.
       responses:
@@ -301,6 +304,16 @@ paths:
       
   
 components:
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: X-Openpush-Key
+      in: header
+      x-apikeyInfoFunc: auth.apikey_auth
+    basic_auth:
+      type: http
+      scheme: basic
+      x-basicInfoFunc: auth.basic_auth
   schemas:
     User:
       required:
