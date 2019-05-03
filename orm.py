@@ -12,7 +12,9 @@ class User(db.Model):
     clients = db.relationship('Client', back_populates='user')
 
     def as_response(self):
-        return {"id": self.id, "name": self.name}
+        return {"id": self.id,
+                "name": self.name,
+                "clients": [c.as_response() for c in self.clients]}
 
     def __repr__(self):
         return '<User %r>' % self.username
@@ -21,10 +23,17 @@ class User(db.Model):
 class Client(db.Model):
     __tablename__ = 'client'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80), unique=True, nullable=False)
+    name = db.Column(db.String(80), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User', back_populates='clients')
+    token = db.Column(db.String(80), nullable=False, unique=True)
     applications = db.relationship('Application', back_populates='client')
+
+    def as_response(self):
+        return {"id": self.id,
+                "name": self.name,
+                "token": self.token,
+                "applications": [a.as_response() for a in self.applications]}
 
     def __repr__(self):
         return '<Client %r>' % self.name
@@ -37,6 +46,11 @@ class Application(db.Model):
     client_id = db.Column(db.Integer, db.ForeignKey('client.id'), nullable=False)
     client = db.relationship('Client', back_populates='applications')
     routing_token = db.Column(db.String(80), unique=True, nullable=False)
+
+    def as_response(self):
+        return {"id": self.id,
+                "name": self.name,
+                "routing_token": self.routing_token}
 
     def __repr__(self):
         return '<Application %r>' % self.name
@@ -51,8 +65,7 @@ class Message(db.Model):
     priority = db.Column(db.Integer, nullable=False)
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     target_id = db.Column(db.Integer, db.ForeignKey('application.id'), nullable=False)
-    target = db.relationship('Application', back_populates=''
-                                                           '')
+    target = db.relationship('Application', back_populates='')
 
     def __repr__(self):
         return '<Message %r: %r>' % (self.subject, self.body)

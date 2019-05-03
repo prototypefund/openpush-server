@@ -1,7 +1,8 @@
 from flask import jsonify
 from connexion import NoContent
 from orm import db, User
-import sqlalchemy
+from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.exc import SQLAlchemyError
 
 
 # Using connexion automatic routing
@@ -39,7 +40,7 @@ def post(body):
     try:
         db.session.add(user)
         db.session.commit()
-    except sqlalchemy.exc.SQLAlchemyError:
+    except SQLAlchemyError:
         return NoContent, 400
     return jsonify(User.query.filter_by(name=name).one().as_response()), 201
 
@@ -49,7 +50,7 @@ def update(id, body):
     password = body['password']
     try:
         user = User.query.filter_by(id=id).one()
-    except sqlalchemy.orm.exc.NoResultFound:
+    except NoResultFound:
         return NoContent, 404
     from argon2 import PasswordHasher
     ph = PasswordHasher()
@@ -62,9 +63,9 @@ def update(id, body):
 def get(id):
     try:
         return jsonify(User.query.filter_by(id=id).one().as_response())
-    except sqlalchemy.orm.exc.NoResultFound:
+    except NoResultFound:
         return NoContent, 404
-    except sqlalchemy.exc.SQLAlchemyError:
+    except SQLAlchemyError:
         return NoContent, 500
 
 
@@ -72,8 +73,8 @@ def delete(id):
     try:
         db.session.delete(User.query.filter_by(id=id).one())
         db.session.commit()
-    except sqlalchemy.orm.exc.NoResultFound:
+    except NoResultFound:
         return NoContent, 404
-    except sqlalchemy.exc.SQLAlchemyError:
+    except SQLAlchemyError:
         return NoContent, 500
     return NoContent, 204

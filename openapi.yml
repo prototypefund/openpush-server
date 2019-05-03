@@ -1,7 +1,7 @@
 openapi: '3.0.2'
 info:
   title: Pushserver API
-  version: "0.0"
+  version: "0.1"
   description: HTTP API for the open pushserver implementation.
 
 security:
@@ -156,8 +156,13 @@ paths:
             schema:
               $ref: "#/components/schemas/Client"
       responses:
-        '200':
-          description: Ok.
+        '201':
+          description: Created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Client"
+
         default:
           description: unexpected error
           content:
@@ -320,6 +325,7 @@ components:
         - id
         - name
         - password
+        - clients
       properties:
         id:
           readOnly: true
@@ -333,6 +339,12 @@ components:
           writeOnly: true
           format: string
           example: "SuperPassword123"
+        clients:
+          readOnly: true
+          type: array
+          items:
+            $ref: "#/components/schemas/Client"
+
     Users:
       type: array
       items:
@@ -357,6 +369,8 @@ components:
       required:
         - id
         - name
+        - applications
+        - token
       properties:
         id:
           readOnly: true
@@ -365,7 +379,16 @@ components:
         name:
           example: "Phone 1"
           type: string
-          
+        token:
+          example: "WDKZMxUFpdjlgiFVSx2A2rP5GSM"
+          type: string
+          readOnly: true
+        applications:
+          readOnly: true
+          type: array
+          items:
+            $ref: "#/components/schemas/Application"
+
     Pushtoken:
       description: Token to target a mobile application.
       example: "8904j76gkjlsfdhalSKL"
