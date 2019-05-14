@@ -1,4 +1,4 @@
-from orm import db, User, Client, Application
+from orm import User, Client, Application
 from sqlalchemy.orm.exc import NoResultFound
 
 

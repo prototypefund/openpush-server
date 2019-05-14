@@ -78,7 +78,6 @@ class SSEClient:
         self.client = client
         self.queue = queue.Queue()
 
-
     def send(self, messageid):
         self.queue.put(messageid)
 

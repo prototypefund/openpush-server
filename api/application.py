@@ -1,5 +1,5 @@
 from flask import jsonify
-from orm import db, Client, Application
+from orm import db, Application
 from connexion import NoContent
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm.exc import NoResultFound
