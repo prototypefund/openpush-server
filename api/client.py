@@ -28,8 +28,7 @@ import secrets
 
 
 def search(user):
-    userobj = User.query.filter_by(name=user).one()
-    return jsonify([client.as_dict() for client in Client.query.filter_by(user=userobj)])
+    return jsonify([client.as_dict() for client in Client.query.join(Client.user).filter(User.name == user)])
 
 
 def post(body, user):
@@ -52,8 +51,7 @@ def post(body, user):
 def put(id, body, user):
     name = body['name']
     try:
-        userobj = User.query.filter_by(name=user).one()
-        client = Client.query.filter_by(id=id, user=userobj).one()
+        client = Client.query.join(Client.user).filter(Client.id == id, User.name == user).one()
     except NoResultFound:
         return NoContent, 404
     client.name = name
@@ -63,8 +61,7 @@ def put(id, body, user):
 
 def delete(id, user):
     try:
-        userobj = User.query.filter_by(name=user).one()
-        db.session.delete(Client.query.filter_by(id=id, user=userobj).one())
+        db.session.delete(Client.query.join(Client.user).filter(Client.id == id, User.name == user).one())
         db.session.commit()
     except NoResultFound:
         return NoContent, 404
