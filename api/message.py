@@ -1,5 +1,5 @@
 from connexion import NoContent
-from orm import db, Message
+from orm import db, Message, Application
 from sqlalchemy.exc import SQLAlchemyError
 import flask
 import queue
@@ -61,6 +61,11 @@ def subscribe(user):
         if sse_client.client.id is client.id:
             sse_client.send(SSEClient.END_STREAM)
     sse_client = SSEClient(client)
+    for m in db.session.query(Message)\
+            .join(Message.target, Application.client)\
+            .filter(Application.client == client)\
+            .all():
+        sse_client.send(m.id)
     connected.append(sse_client)
     return flask.Response(flask.helpers.stream_with_context(sse_client.generator()), content_type='text/event-stream')
 
@@ -72,8 +77,9 @@ class SSEClient:
         self.client = client
         self.queue = queue.Queue()
 
-    def send(self, message):
-        self.queue.put(message)
+
+    def send(self, messageid):
+        self.queue.put(messageid)
 
     def generator(self):
         # make sure headers are sent immeaditely to the client
@@ -101,5 +107,9 @@ class SSEClient:
         except SQLAlchemyError as e:
             print(str(e))
         finally:
-            connected.remove(self)
+            try:
+                connected.remove(self)
+            except ValueError:
+                # it's okay, we just want it gone.
+                pass
             flask.current_app.logger.info("Client %i disconnected.", self.client.id)
