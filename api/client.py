@@ -29,7 +29,7 @@ import secrets
 
 def search(user):
     userobj = User.query.filter_by(name=user).one()
-    return jsonify([client.as_response() for client in Client.query.filter_by(user=userobj)])
+    return jsonify([client.as_dict() for client in Client.query.filter_by(user=userobj)])
 
 
 def post(body, user):
@@ -46,23 +46,25 @@ def post(body, user):
     except SQLAlchemyError as e:
         print(str(e))
         return NoContent, 400
-    return jsonify(client.as_response()), 201
+    return jsonify(client.as_dict()), 201
 
 
-def put(id, body):
+def put(id, body, user):
     name = body['name']
     try:
-        client = Client.query.filter_by(id=id).one()
+        userobj = User.query.filter_by(name=user).one()
+        client = Client.query.filter_by(id=id, user=userobj).one()
     except NoResultFound:
         return NoContent, 404
     client.name = name
     db.session.commit()
-    return jsonify(client.as_response()), 200
+    return jsonify(client.as_dict()), 200
 
 
-def delete(id):
+def delete(id, user):
     try:
-        db.session.delete(Client.query.filter_by(id=id).one())
+        userobj = User.query.filter_by(name=user).one()
+        db.session.delete(Client.query.filter_by(id=id, user=userobj).one())
         db.session.commit()
     except NoResultFound:
         return NoContent, 404

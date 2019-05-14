@@ -314,6 +314,25 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+
+  /subscribe:
+    get:
+      operationId: api.message.subscribe
+      security:
+        - client_key: []
+      summary: Subscribe to messages delivered via SSE (Server Sent Events) here
+      tags: [message]
+      responses:
+        '200':
+          description: Subscribed.
+          content:
+            text/event-stream: {}
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
       
   
 components:
@@ -416,7 +435,6 @@ components:
     Message:
       required: 
         - body
-        - target
       properties:
         subject:
           example: "Message Subject"
@@ -424,8 +442,6 @@ components:
         body:
           example: "Long message text goes here..."
           type: string
-        target:
-          $ref: "#/components/schemas/Pushtoken"
         priority:
           type: string
           enum: [NORMAL, HIGH]

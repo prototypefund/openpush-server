@@ -7,10 +7,13 @@ from argon2 import PasswordHasher
 from sqlalchemy.orm.exc import NoResultFound
 
 app = connexion.App(__name__)
-app.add_api('openapi.yml', resolver=RestyResolver('api'), strict_validation=True, validate_responses=True)
+#app.add_api('openapi.yml', resolver=RestyResolver('api'), strict_validation=True, validate_responses=True)
+app.add_api('openapi.yml', resolver=RestyResolver('api'), strict_validation=True)
 # due to using connexion the flask app is under app.app
 app.app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
-app.app.config['SQLALCHEMY_ECHO'] = True
+app.app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+#app.app.config['SQLALCHEMY_ECHO'] = True
 
 if __name__ == '__main__':
     db.init_app(app.app)
@@ -23,4 +26,4 @@ if __name__ == '__main__':
         user = User(name="admin", password=ph.hash("admin"))
         db.session.add(user)
         db.session.commit()
-    app.run(debug=True)
+    app.run(debug=True, threaded=True)

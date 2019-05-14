@@ -1,0 +1,5 @@
+flask
+connexion
+sqlalchemy
+flask_sqlalchemy
+argon2-cffi

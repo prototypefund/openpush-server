@@ -28,7 +28,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 
 def search():
-    return jsonify([user.as_response() for user in User.query.all()])
+    return jsonify([user.as_dict() for user in User.query.all()])
 
 
 def post(body):
@@ -42,7 +42,7 @@ def post(body):
         db.session.commit()
     except SQLAlchemyError:
         return NoContent, 400
-    return jsonify(User.query.filter_by(name=name).one().as_response()), 201
+    return jsonify(User.query.filter_by(name=name).one().as_dict()), 201
 
 
 def update(id, body):
@@ -57,12 +57,12 @@ def update(id, body):
     user.password = ph.hash(password)
     user.name = name
     db.session.commit()
-    return jsonify(user.as_response()), 200
+    return jsonify(user.as_dict()), 200
 
 
 def get(id):
     try:
-        return jsonify(User.query.filter_by(id=id).one().as_response())
+        return jsonify(User.query.filter_by(id=id).one().as_dict())
     except NoResultFound:
         return NoContent, 404
     except SQLAlchemyError:
