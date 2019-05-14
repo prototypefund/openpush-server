@@ -64,6 +64,7 @@ def subscribe(user):
     for m in db.session.query(Message)\
             .join(Message.target, Application.client)\
             .filter(Application.client == client)\
+            .order_by(Message.timestamp)\
             .all():
         sse_client.send(m.id)
     connected.append(sse_client)
