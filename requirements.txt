@@ -1,5 +1,5 @@
 flask
-connexion
+connexion>=2.0
 sqlalchemy
 flask_sqlalchemy
 argon2-cffi
