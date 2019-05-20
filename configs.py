@@ -6,20 +6,20 @@ class Config:
 
 
 class ProdConfig(Config):
-    ENV = 'production'
+    ENV = "production"
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///app.db'
+    SQLALCHEMY_DATABASE_URI = "sqlite:///app.db"
 
 
 class DevConfig(Config):
-    ENV = 'development'
+    ENV = "development"
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///dev.db'
+    SQLALCHEMY_DATABASE_URI = "sqlite:///dev.db"
     SQLALCHEMY_ECHO = True
 
 
 class TestConfig(Config):
-    ENV = 'test'
+    ENV = "test"
     DEBUG = True
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite://'
+    SQLALCHEMY_DATABASE_URI = "sqlite://"

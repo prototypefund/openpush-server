@@ -28,11 +28,16 @@ import secrets
 
 
 def search(user):
-    return jsonify([client.as_dict() for client in Client.query.join(Client.user).filter(User.name == user)])
+    return jsonify(
+        [
+            client.as_dict()
+            for client in Client.query.join(Client.user).filter(User.name == user)
+        ]
+    )
 
 
 def post(body, user):
-    name = body['name']
+    name = body["name"]
     userobj = User.query.filter_by(name=user).one()
     while True:
         token = secrets.token_urlsafe(20)
@@ -49,9 +54,13 @@ def post(body, user):
 
 
 def put(id, body, user):
-    name = body['name']
+    name = body["name"]
     try:
-        client = Client.query.join(Client.user).filter(Client.id == id, User.name == user).one()
+        client = (
+            Client.query.join(Client.user)
+            .filter(Client.id == id, User.name == user)
+            .one()
+        )
     except NoResultFound:
         return NoContent, 404
     client.name = name
@@ -61,7 +70,11 @@ def put(id, body, user):
 
 def delete(id, user):
     try:
-        db.session.delete(Client.query.join(Client.user).filter(Client.id == id, User.name == user).one())
+        db.session.delete(
+            Client.query.join(Client.user)
+            .filter(Client.id == id, User.name == user)
+            .one()
+        )
         db.session.commit()
     except NoResultFound:
         return NoContent, 404

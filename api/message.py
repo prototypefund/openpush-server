@@ -39,9 +39,9 @@ def find_connected_client(app):
 
 def post(body, user):
     app = user
-    msgbody = body['body']
-    priority = body['priority']
-    subject = body['subject']
+    msgbody = body["body"]
+    priority = body["priority"]
+    subject = body["subject"]
     message = Message(subject=subject, priority=priority, body=msgbody, target=app)
     try:
         db.session.add(message)
@@ -61,14 +61,19 @@ def subscribe(user):
         if sse_client.client.id is client.id:
             sse_client.send(SSEClient.END_STREAM)
     sse_client = SSEClient(client)
-    for m in db.session.query(Message)\
-            .join(Message.target, Application.client)\
-            .filter(Application.client == client)\
-            .order_by(Message.timestamp)\
-            .all():
+    for m in (
+        db.session.query(Message)
+        .join(Message.target, Application.client)
+        .filter(Application.client == client)
+        .order_by(Message.timestamp)
+        .all()
+    ):
         sse_client.send(m.id)
     connected.append(sse_client)
-    return flask.Response(flask.helpers.stream_with_context(sse_client.generator()), content_type='text/event-stream')
+    return flask.Response(
+        flask.helpers.stream_with_context(sse_client.generator()),
+        content_type="text/event-stream",
+    )
 
 
 class SSEClient:
@@ -96,7 +101,9 @@ class SSEClient:
                 yield ""
                 # If we reached this point the message has been delivered to the connected client successfully.
                 # So we can remove it from the db at this point
-                flask.current_app.logger.info("message %i delivered, deleting from db", msgid)
+                flask.current_app.logger.info(
+                    "message %i delivered, deleting from db", msgid
+                )
                 # Deleting the message from the db needs to be done in a seperate SQLAlchemy session here because
                 # the generator runs on different threads and session sharing across threads is apparently not good.
                 session_factory = db.sessionmaker(bind=db.get_engine(db.get_app()))

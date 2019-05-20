@@ -32,9 +32,10 @@ def search():
 
 
 def post(body):
-    name = body['name']
-    password = body['password']
+    name = body["name"]
+    password = body["password"]
     from argon2 import PasswordHasher
+
     ph = PasswordHasher()
     user = User(name=name, password=ph.hash(password))
     try:
@@ -46,13 +47,14 @@ def post(body):
 
 
 def update(id, body):
-    name = body['name']
-    password = body['password']
+    name = body["name"]
+    password = body["password"]
     try:
         user = User.query.filter_by(id=id).one()
     except NoResultFound:
         return NoContent, 404
     from argon2 import PasswordHasher
+
     ph = PasswordHasher()
     user.password = ph.hash(password)
     user.name = name

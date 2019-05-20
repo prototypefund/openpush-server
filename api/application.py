@@ -29,6 +29,7 @@ import secrets
 
 # user, injected by connexion auth handling is actually a client object here
 
+
 def search(user):
     client = user
     return jsonify([a.as_dict() for a in Application.query.filter_by(client=client)])
@@ -36,7 +37,7 @@ def search(user):
 
 def post(body, user):
     client = user
-    name = body['name']
+    name = body["name"]
     while True:
         token = secrets.token_urlsafe(20)
         if not Application.query.filter_by(routing_token=token).one_or_none():
