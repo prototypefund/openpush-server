@@ -3,7 +3,7 @@ from orm import db, Application
 from connexion import NoContent
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm.exc import NoResultFound
-import secrets
+import secrets, flask
 
 # Using connexion automatic routing
 # paths:
@@ -61,4 +61,6 @@ def delete(id, user):
         return NoContent, 404
     except SQLAlchemyError:
         return NoContent, 500
-    return NoContent, 204
+    response = flask.make_response("", 204)
+    response.headers = {"Content-Length": 0}
+    return response

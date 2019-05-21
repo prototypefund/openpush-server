@@ -45,13 +45,13 @@ def setup_initial_data(db):
     ph = PasswordHasher()
     u1 = User(name="User 1", password=ph.hash("password1"))
     u2 = User(name="User 2", password=ph.hash("password2"))
-    c1 = Client(name="client_u1_1", user=u1, token="aaaaAAAAbbbbBBBB00001111-C1")
-    c2 = Client(name="client_u1_2", user=u1, token="aaaaAAAAbbbbBBBB00001111-C2")
+    c1 = Client(name="client_u1_1", user=u1, token="aaaaAAAAbbbbBBBB0000111-C1")
+    c2 = Client(name="client_u1_2", user=u1, token="aaaaAAAAbbbbBBBB0000111-C2")
     a1 = Application(
-        name="app_c1_1", client=c1, routing_token="aaaaAAAAbbbbBBBB00001111-A1"
+        name="app_c1_1", client=c1, routing_token="aaaaAAAAbbbbBBBB0000111-A1"
     )
     a2 = Application(
-        name="app_c2_2", client=c1, routing_token="aaaaAAAAbbbbBBBB00001111-A2"
+        name="app_c1_2", client=c1, routing_token="aaaaAAAAbbbbBBBB0000111-A2"
     )
 
     db.session.add_all([u1, u2, c1, c2, a1, a2])

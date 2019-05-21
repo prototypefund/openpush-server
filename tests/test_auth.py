@@ -15,7 +15,7 @@ class TestAuth:
 
     def test_client_auth_success(self, testapp):
         res = testapp.get(
-            "/application", headers={"X-Openpush-Key": "aaaaAAAAbbbbBBBB00001111-C1"}
+            "/application", headers={"X-Openpush-Key": "aaaaAAAAbbbbBBBB0000111-C1"}
         )
         assert res.status_int == 200
 
@@ -23,7 +23,7 @@ class TestAuth:
         res = testapp.get(
             "/application",
             expect_errors=True,
-            headers={"X-Openpush-Key": "aaaaAAAAbbbbBBBB0INVALID-XX"},
+            headers={"X-Openpush-Key": "aaaaAAAAbbbbBBBBINVALID-XX"},
         )
         assert res.status_int == 401
 
@@ -35,7 +35,7 @@ class TestAuth:
         res = testapp.post(
             "/message",
             expect_errors=True,
-            headers={"X-Openpush-Key": "aaaaAAAAbbbbBBBB00001111-A1"},
+            headers={"X-Openpush-Key": "aaaaAAAAbbbbBBBB0000111-A1"},
         )
         # 400 means authentication passed but empty body is still invalid
         assert res.status_int == 400
@@ -44,7 +44,7 @@ class TestAuth:
         res = testapp.post_json(
             "/message",
             {"body": "."},
-            headers={"X-Openpush-Key": "aaaaAAAAbbbbBBBB00001111-A1"},
+            headers={"X-Openpush-Key": "aaaaAAAAbbbbBBBB0000111-A1"},
         )
         assert res.status_int == 200
 
@@ -52,7 +52,7 @@ class TestAuth:
         res = testapp.post(
             "/message",
             expect_errors=True,
-            headers={"X-Openpush-Key": "aaaaAAAAbbbbBBBB0INVALID-XX"},
+            headers={"X-Openpush-Key": "aaaaAAAAbbbbBBBBINVALID-XX"},
         )
         assert res.status_int == 401
 
