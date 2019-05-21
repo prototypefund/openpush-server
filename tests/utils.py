@@ -1,2 +1,2 @@
-def set_of(attr: str=None, data: dict=None):
+def set_of(attr: str = None, data: dict = None):
     return set([d[attr] for d in data])

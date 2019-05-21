@@ -7,10 +7,11 @@ def basic_auth(username, password, required_scopes=None):
 
     ph = argon2.PasswordHasher()
     try:
-        ph.verify(User.query.filter_by(name=username).one().password, password)
+        user = User.query.filter_by(name=username).one()
+        ph.verify(user.password, password)
     except (argon2.exceptions.VerifyMismatchError, NoResultFound):
         return None
-    return {"sub": username}
+    return {"sub": user}
 
 
 def clientkey_auth(apiKey, required_scopes=None):

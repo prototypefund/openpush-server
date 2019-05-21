@@ -31,19 +31,18 @@ def search(user):
     return jsonify(
         [
             client.as_dict()
-            for client in Client.query.join(Client.user).filter(User.name == user)
+            for client in Client.query.join(Client.user).filter(User.id == user.id)
         ]
     )
 
 
 def post(body, user):
     name = body["name"]
-    userobj = User.query.filter_by(name=user).one()
     while True:
         token = secrets.token_urlsafe(20)
         if not Client.query.filter_by(token=token).one_or_none():
             break
-    client = Client(name=name, user=userobj, token=token)
+    client = Client(name=name, user=user, token=token)
     try:
         db.session.add(client)
         db.session.commit()
@@ -58,7 +57,7 @@ def put(id, body, user):
     try:
         client = (
             Client.query.join(Client.user)
-            .filter(Client.id == id, User.name == user)
+            .filter(Client.id == id, User.id == user.id)
             .one()
         )
     except NoResultFound:
@@ -72,7 +71,7 @@ def delete(id, user):
     try:
         db.session.delete(
             Client.query.join(Client.user)
-            .filter(Client.id == id, User.name == user)
+            .filter(Client.id == id, User.id == user.id)
             .one()
         )
         db.session.commit()

@@ -39,9 +39,18 @@ def find_connected_client(app):
 
 def post(body, user):
     app = user
-    msgbody = body["body"]
-    priority = body["priority"]
-    subject = body["subject"]
+    try:
+        msgbody = body["body"]
+    except KeyError:
+        return NoContent, 400
+    try:
+        priority = body["priority"]
+    except KeyError:
+        priority = "NORMAL"
+    try:
+        subject = body["subject"]
+    except KeyError:
+        subject = ""
     message = Message(subject=subject, priority=priority, body=msgbody, target=app)
     try:
         db.session.add(message)

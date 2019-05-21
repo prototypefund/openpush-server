@@ -2,9 +2,10 @@
 
 import connexion
 from connexion.resolver import RestyResolver
-from orm import db
+from orm import db, User
 import configs
 from flask.helpers import get_debug_flag
+from sqlalchemy.orm.exc import NoResultFound
 
 
 def create_app(config_object=configs.ProdConfig):
@@ -25,4 +26,15 @@ def flask_app():
 if __name__ == "__main__":
     CONFIG = configs.DevConfig if get_debug_flag() else configs.ProdConfig
     app = create_app(CONFIG)
+    if CONFIG.USER and CONFIG.PASS:
+        try:
+            User.query.filter_by(name=CONFIG.USER).one()
+        except NoResultFound:
+            from argon2 import PasswordHasher
+
+            ph = PasswordHasher()
+            user = User(name=CONFIG.USER, password=ph.hash(CONFIG.PASS))
+            db.session.add(user)
+            db.session.commit()
+
     app.run(port=CONFIG.APP_PORT, debug=CONFIG.DEBUG)

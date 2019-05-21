@@ -3,6 +3,7 @@ from connexion import NoContent
 from orm import db, User
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import SQLAlchemyError
+import flask
 
 
 # Using connexion automatic routing
@@ -72,11 +73,15 @@ def get(id):
 
 
 def delete(id):
-    try:
-        db.session.delete(User.query.filter_by(id=id).one())
-        db.session.commit()
-    except NoResultFound:
+    user = User.query.get(id)
+    if not user:
         return NoContent, 404
-    except SQLAlchemyError:
+    try:
+        db.session.delete(user)
+        db.session.commit()
+    except SQLAlchemyError as e:
+        print(str(e))
         return NoContent, 500
-    return NoContent, 204
+    response = flask.make_response("", 204)
+    response.headers = {"Content-Length": 0}
+    return response

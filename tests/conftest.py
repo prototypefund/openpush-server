@@ -6,7 +6,7 @@ from orm import User, Client, Application, Message
 from orm import db as _db
 
 
-@pytest.fixture
+@pytest.fixture(scope="class")
 def app():
     _app = create_app(TestConfig)
     ctx = _app.app.test_request_context()
@@ -17,20 +17,20 @@ def app():
     ctx.pop()
 
 
-@pytest.fixture()
+@pytest.fixture(scope="class")
 def testapp(app):
     """A Webtest app."""
     return webtest.TestApp(app)
 
 
-@pytest.fixture(scope="function", autouse=True)
+@pytest.fixture(scope="class", autouse=True)
 def db(app):
     """A database for the tests."""
     _db.app = app
     with app.app_context():
         _db.create_all()
 
-    setup_initial_data(db)
+    setup_initial_data(_db)
 
     yield _db
 
@@ -54,5 +54,5 @@ def setup_initial_data(db):
         name="app_c2_2", client=c1, routing_token="aaaaAAAAbbbbBBBB00001111-A2"
     )
 
-    _db.session.add_all([u1, u2, c1, c2, a1, a2])
-    _db.session.commit()
+    db.session.add_all([u1, u2, c1, c2, a1, a2])
+    db.session.commit()
