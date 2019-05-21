@@ -18,12 +18,10 @@ class TestUser:
     def test_update(self, testapp):
         testapp.authorization = ("Basic", ("User 1", "password1"))
         res = testapp.post_json("/user/1", {"name": "newname", "password": "newpass"})
-        assert res.status_int == 200
         data = res.json
         assert data["name"] == "newname"
         testapp.authorization = ("Basic", ("newname", "newpass"))
         res = testapp.post_json("/user/1", {"name": "User 1", "password": "password1"})
-        assert res.status_int == 200
         data = res.json
         assert data["name"] == "User 1"
 
@@ -33,3 +31,12 @@ class TestUser:
         assert res.status_int == 204
         res = testapp.get("/user/2", expect_errors=True)
         assert res.status_int == 404
+
+    def test_create(self, testapp):
+        testapp.authorization = ("Basic", ("User 1", "password1"))
+        res = testapp.post_json("/user", {"name": "New User", "password": "newpass"})
+        assert res.status_int == 201
+        data = res.json
+        res = testapp.get("/user/" + str(data["id"]))
+        data = res.json
+        assert data["name"] == "New User"
