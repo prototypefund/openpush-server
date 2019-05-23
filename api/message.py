@@ -1,9 +1,11 @@
-from connexion import NoContent
-from orm import db, Message, Application
-from sqlalchemy.exc import SQLAlchemyError
-import flask
-import queue
 import json
+import queue
+
+import flask
+from connexion import NoContent
+from sqlalchemy.exc import SQLAlchemyError
+
+from orm import db, Message, Application
 
 connected = []
 
@@ -106,15 +108,18 @@ class SSEClient:
                 lastmsg = json.dumps(Message.query.get(msgid).as_dict())
                 db.session.close()
                 yield "data: " + lastmsg + "\n\n"
-                # This is somehow necessary for detecting that the client disconnected before the next message
+                # This is somehow necessary for detecting that the client disconnected
+                # before the next message
                 yield ""
-                # If we reached this point the message has been delivered to the connected client successfully.
+                # If we reached this point the message has been delivered to the
+                # connected client successfully.
                 # So we can remove it from the db at this point
                 flask.current_app.logger.info(
                     "message %i delivered, deleting from db", msgid
                 )
-                # Deleting the message from the db needs to be done in a seperate SQLAlchemy session here because
-                # the generator runs on different threads and session sharing across threads is apparently not good.
+                # Deleting the message from the db needs to be done in a seperate
+                # SQLAlchemy session here because the generator runs on different
+                # threads and session sharing across threads is apparently not good.
                 session_factory = db.sessionmaker(bind=db.get_engine(db.get_app()))
                 session = session_factory()
                 session.delete(session.query(Message).get(msgid))

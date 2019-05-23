@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
-import socket, select
-import sys, signal
+import select
+import signal
+import socket
+import sys
 
 
 def signal_handler(sig, frame):
@@ -33,5 +35,5 @@ while True:
         (clientsocket, address) = serversocket.accept()
         potential_readers.append(clientsocket)
         # potential_writers.append(clientsocket)
-    for socket in ready_to_read:
-        socket.recv(RECVBUFFER)
+    for s in ready_to_read:
+        s.recv(RECVBUFFER)

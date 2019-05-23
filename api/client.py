@@ -1,10 +1,13 @@
-from flask import jsonify
+import secrets
+
+import flask
 from connexion import NoContent
-from orm import db, User, Client
+from flask import jsonify
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm.exc import NoResultFound
-import secrets
-import flask
+
+from orm import db, User, Client
+
 
 # Using connexion automatic routing
 # paths:
@@ -40,6 +43,7 @@ def search(user):
 def post(body, user):
     name = body["name"]
     while True:
+        token = secrets.token_urlsafe(20)
         token = secrets.token_urlsafe(20)
         if not Client.query.filter_by(token=token).one_or_none():
             break

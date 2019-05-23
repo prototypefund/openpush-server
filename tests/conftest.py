@@ -1,10 +1,11 @@
 import pytest
 import webtest
+from pytest_localserver.http import WSGIServer
+
 from app import create_app
 from configs import TestConfig
 from orm import User, Client, Application, Message
 from orm import db as _db
-from pytest_localserver.http import WSGIServer
 
 
 @pytest.fixture(scope="class")

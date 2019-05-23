@@ -1,7 +1,9 @@
-from orm import Message
-import urllib3
-import sseclient
 import json
+
+import sseclient
+import urllib3
+
+from orm import Message
 
 
 # Want to test for:

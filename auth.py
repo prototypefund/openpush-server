@@ -1,5 +1,6 @@
-from orm import User, Client, Application
 from sqlalchemy.orm.exc import NoResultFound
+
+from orm import User, Client, Application
 
 
 def basic_auth(username, password, required_scopes=None):

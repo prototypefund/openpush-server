@@ -2,10 +2,11 @@
 
 import connexion
 from connexion.resolver import RestyResolver
-from orm import db, User
-import configs
 from flask.helpers import get_debug_flag
 from sqlalchemy.orm.exc import NoResultFound
+
+import configs
+from orm import db, User
 
 
 def create_app(config_object=configs.ProdConfig):

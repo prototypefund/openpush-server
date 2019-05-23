@@ -1,9 +1,10 @@
-from flask import jsonify
-from connexion import NoContent
-from orm import db, User
-from sqlalchemy.orm.exc import NoResultFound
-from sqlalchemy.exc import SQLAlchemyError
 import flask
+from connexion import NoContent
+from flask import jsonify
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm.exc import NoResultFound
+
+from orm import db, User
 
 
 # Using connexion automatic routing

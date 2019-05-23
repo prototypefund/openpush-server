@@ -1,9 +1,13 @@
-from flask import jsonify
-from orm import db, Application
+import flask
+import secrets
+
 from connexion import NoContent
+from flask import jsonify
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm.exc import NoResultFound
-import secrets, flask
+
+from orm import db, Application
+
 
 # Using connexion automatic routing
 # paths:

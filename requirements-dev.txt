@@ -1,0 +1,7 @@
+pytest
+pytest_localserver
+webtest
+sseclient
+black
+flake8
+pre-commit
