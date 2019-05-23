@@ -1,7 +1,7 @@
 pytest
 pytest_localserver
 webtest
-sseclient
+sseclient-py
 black
 flake8
 pre-commit
