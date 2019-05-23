@@ -4,6 +4,7 @@ from app import create_app
 from configs import TestConfig
 from orm import User, Client, Application, Message
 from orm import db as _db
+from pytest_localserver.http import WSGIServer
 
 
 @pytest.fixture(scope="class")
@@ -39,6 +40,14 @@ def db(app):
     _db.drop_all()
 
 
+@pytest.fixture
+def testserver(request, app):
+    server = WSGIServer(application=app)
+    server.start()
+    request.addfinalizer(server.stop)
+    return server
+
+
 def setup_initial_data(db):
     from argon2 import PasswordHasher
 
@@ -53,6 +62,8 @@ def setup_initial_data(db):
     a2 = Application(
         name="app_c1_2", client=c1, routing_token="aaaaAAAAbbbbBBBB0000111-A2"
     )
+    m1 = Message(body="Body1", priority="NORMAL", subject="Subject1", target=a1)
+    m2 = Message(body="Body2", priority="NORMAL", subject="Subject2", target=a1)
 
-    db.session.add_all([u1, u2, c1, c2, a1, a2])
+    db.session.add_all([u1, u2, c1, c2, a1, a2, m1, m2])
     db.session.commit()
