@@ -1,7 +1,7 @@
 import json
 
 import sseclient
-import urllib3
+import requests
 
 from orm import Message
 
@@ -39,17 +39,15 @@ class TestMessage:
 
     def test_receive_stored(self, testserver, db):
         url = testserver.url + "/subscribe"
-        http = urllib3.PoolManager()
-        res = http.request(
-            "GET",
+        res = requests.get(
             url,
+            stream=True,
             headers={
                 "X-Openpush-Key": "aaaaAAAAbbbbBBBB0000111-C1",
                 "accept": "text/event-stream",
             },
-            preload_content=False,
         )
-        client = sseclient.SSEClient(res)
+        client = sseclient.SSEClient(res.iter_content())
         m1 = json.loads(next(client.events()).data)
         m2 = json.loads(next(client.events()).data)
         client.close()

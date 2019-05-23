@@ -3,6 +3,8 @@ class Config:
     TESTING = False
     APP_PORT = 5000
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    USER = None
+    PASS = None
 
 
 class ProdConfig(Config):
