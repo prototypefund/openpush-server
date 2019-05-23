@@ -1,3 +1,4 @@
+image: python:3.6-slim-stretch
 lint:
   script:
     - pip3 install black flake8
