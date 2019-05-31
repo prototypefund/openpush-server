@@ -96,7 +96,7 @@ class CurlClient:
             self.multi = pycurl.CurlMulti()
         self.multi.add_handle(c)
 
-    def get(self, timeout=0.1):
+    def get(self, timeout=0.5):
         """This calls get on the associated multi-handle. So it processes all
         transfers in parallel """
         start = time.time()
