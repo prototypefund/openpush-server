@@ -1,8 +1,3 @@
-import json
-
-import sseclient
-import requests
-
 from orm import Message
 
 
@@ -15,41 +10,24 @@ from orm import Message
 class TestMessage:
     def test_send(self, testapp, db):
         # minimal fields set
-        res = testapp.post_json(
+        testapp.post_json(
             "/message",
-            {"body": "Message"},
+            {"body": "Message1"},
             headers={"X-Openpush-Key": "aaaaAAAAbbbbBBBB0000111-A1"},
         )
         # everything set
-        res = testapp.post_json(
+        testapp.post_json(
             "/message",
-            {"body": "Message", "priority": "HIGH", "subject": "subhect"},
+            {"body": "Message2", "priority": "HIGH", "subject": "subject"},
             headers={"X-Openpush-Key": "aaaaAAAAbbbbBBBB0000111-A1"},
         )
         assert len(db.session.query(Message).all()) == 4
         # missing body
         res = testapp.post_json(
             "/message",
-            {"priority": "HIGH", "subject": "subhect"},
+            {"priority": "HIGH", "subject": "subject"},
             expect_errors=True,
             headers={"X-Openpush-Key": "aaaaAAAAbbbbBBBB0000111-A1"},
         )
         assert res.status_int == 400
         assert len(db.session.query(Message).all()) == 4
-
-    def test_receive_stored(self, testserver, db):
-        url = testserver.url + "/subscribe"
-        res = requests.get(
-            url,
-            stream=True,
-            headers={
-                "X-Openpush-Key": "aaaaAAAAbbbbBBBB0000111-C1",
-                "accept": "text/event-stream",
-            },
-        )
-        client = sseclient.SSEClient(res.iter_content())
-        m1 = json.loads(next(client.events()).data)
-        m2 = json.loads(next(client.events()).data)
-        client.close()
-        assert m1["body"] == "Body1"
-        assert m2["body"] == "Body2"

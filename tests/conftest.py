@@ -43,7 +43,7 @@ def db(app):
 
 @pytest.fixture
 def testserver(request, app):
-    server = WSGIServer(application=app)
+    server = WSGIServer(application=app, threaded=True)
     server.start()
     request.addfinalizer(server.stop)
     return server

@@ -5,4 +5,4 @@ sseclient-py
 black
 flake8
 pre-commit
-requests
+pycurl
