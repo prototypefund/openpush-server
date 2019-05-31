@@ -56,6 +56,7 @@ class TestSubscribe:
         c2 = CurlClient(url, "aaaaAAAAbbbbBBBB0000111-C1", multi)
         c2.get()
         assert c.is_finished()
+        c2.shutdown()
 
     def test_different_clients(self, testserver, testapp):
         """Test connection by different clients"""
@@ -77,6 +78,8 @@ class TestSubscribe:
         # and client2 shouldn't
         with pytest.raises(StopIteration):
             next(client2.events())
+        c.shutdown()
+        c2.shutdown()
 
 
 class CurlClient:
@@ -96,7 +99,7 @@ class CurlClient:
             self.multi = pycurl.CurlMulti()
         self.multi.add_handle(c)
 
-    def get(self, timeout=0.5):
+    def get(self, timeout=0.1):
         """This calls get on the associated multi-handle. So it processes all
         transfers in parallel """
         start = time.time()

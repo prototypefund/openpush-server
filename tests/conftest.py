@@ -8,7 +8,7 @@ from orm import User, Client, Application, Message
 from orm import db as _db
 
 
-@pytest.fixture(scope="class")
+@pytest.fixture
 def app():
     _app = create_app(TestConfig)
     ctx = _app.app.test_request_context()
@@ -19,13 +19,13 @@ def app():
     ctx.pop()
 
 
-@pytest.fixture(scope="class")
+@pytest.fixture
 def testapp(app):
     """A Webtest app."""
     return webtest.TestApp(app)
 
 
-@pytest.fixture(scope="class", autouse=True)
+@pytest.fixture(autouse=True)
 def db(app):
     """A database for the tests."""
     _db.app = app
