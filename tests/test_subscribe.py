@@ -112,7 +112,7 @@ class CurlClient:
             t = time.time()
             if t - start >= timeout:
                 break
-            ret = self.multi.select(1.0)
+            ret = self.multi.select(timeout)
             if ret == -1:
                 continue
             while True:
@@ -128,5 +128,4 @@ class CurlClient:
         return self.easy in self.get_finished()
 
     def shutdown(self):
-        self.multi.close()
         self.easy.close()
