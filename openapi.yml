@@ -154,7 +154,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Client"
+              $ref: "#/components/schemas/ClientRegistration"
       responses:
         '201':
           description: Created.
@@ -402,6 +402,15 @@ components:
           example: "8904j76gkjlsfdhalSKL"
           type: string
 
+    ClientRegistration:
+      description: Data for registering a new client
+      required:
+        - name
+      properties:
+        name:
+          example: "Phone 1"
+          type: string
+
     Client:
       description: A mobile client
       required:
@@ -456,3 +465,9 @@ components:
           format: int32
         message:
           type: string
+
+servers:
+  - url: '{server}'
+    variables:
+      server:
+        default: 'http://localhost:5000'
