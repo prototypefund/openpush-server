@@ -144,6 +144,24 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+
+    delete:
+      operationId: api.client.delete_self
+      tags:
+        - client
+      summary: Delete current client.
+      security:
+        - client_key: []
+      responses:
+        '200':
+          description: Ok.
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
     post:
       tags:
         - client
@@ -465,9 +483,3 @@ components:
           format: int32
         message:
           type: string
-
-servers:
-  - url: '{server}'
-    variables:
-      server:
-        default: 'http://localhost:5000'

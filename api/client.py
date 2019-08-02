@@ -88,3 +88,13 @@ def delete(id, user):
     response = flask.make_response("", 204)
     response.headers = {"Content-Length": 0}
     return response
+
+
+def delete_self(user):
+    client = user
+    try:
+        db.session.delete(client)
+        db.session.commit()
+    except SQLAlchemyError as e:
+        print(str(e))
+        return NoContent, 500
