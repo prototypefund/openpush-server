@@ -276,7 +276,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Application"
+              $ref: "#/components/schemas/AppRegistration"
       responses:
         '201':
           description: Created.
@@ -418,6 +418,15 @@ components:
           readOnly: true
           description: Token to target a mobile application.
           example: "8904j76gkjlsfdhalSKL"
+          type: string
+
+    AppRegistration:
+      description: Data for registering a new App
+      required:
+        - name
+      properties:
+        name:
+          example: "riot-android"
           type: string
 
     ClientRegistration:
