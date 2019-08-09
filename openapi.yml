@@ -480,11 +480,17 @@ components:
           
     Error:
       required:
-        - code
-        - message
+        - detail
+        - status
+        - title
+        - type
       properties:
-        code:
+        status:
           type: integer
           format: int32
-        message:
+        detail:
+          type: string
+        title:
+          type: string
+        type:
           type: string

@@ -1,7 +1,7 @@
 import flask
 import secrets
 
-from connexion import NoContent
+from connexion import NoContent, problem
 from flask import jsonify
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm.exc import NoResultFound
@@ -42,6 +42,14 @@ def search(user):
 def post(body, user):
     client = user
     registration_id = body["registration_id"]
+
+    # Check if registration id is unique for that client
+    if Application.query.filter_by(
+        registration_id=registration_id, client=client
+    ).one_or_none():
+        return problem(400, "Bad Request", "registration_id already exists")
+
+    # Generate globally (for this pushserver instance) unique routing token
     while True:
         token = secrets.token_urlsafe(20)
         if not Application.query.filter_by(routing_token=token).one_or_none():
