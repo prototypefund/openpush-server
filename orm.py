@@ -87,7 +87,7 @@ class Message(db.Model):
             "subject": self.subject,
             "body": self.body,
             "priority": self.priority.name,
-            "routing_token": self.target.routing_token,
+            "registration_id": self.target.registration_id,
         }
 
     def __repr__(self):
