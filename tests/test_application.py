@@ -8,7 +8,7 @@ class TestApplication:
         )
         data = res.json
         assert len(data) == 2
-        assert set_of("name", data) == {"app_c1_1", "app_c1_2"}
+        assert set_of("registration_id", data) == {"app_c1_1", "app_c1_2"}
 
     def test_fetch_empty(self, testapp):
         res = testapp.get(
@@ -20,7 +20,7 @@ class TestApplication:
     def test_create(self, testapp):
         res = testapp.post_json(
             "/application",
-            {"name": "New App"},
+            {"registration_id": "New App"},
             headers={"X-Openpush-Key": "aaaaAAAAbbbbBBBB0000111-C1"},
         )
         assert res.status_int == 201
@@ -35,7 +35,7 @@ class TestApplication:
         )
         data = res.json
         assert len(data) == 3
-        assert set_of("name", data) == {"app_c1_1", "app_c1_2", "New App"}
+        assert set_of("registration_id", data) == {"app_c1_1", "app_c1_2", "New App"}
 
     def test_delete(self, testapp):
         res = testapp.delete(
@@ -46,4 +46,4 @@ class TestApplication:
             "/application", headers={"X-Openpush-Key": "aaaaAAAAbbbbBBBB0000111-C2"}
         )
         data = res.json
-        assert "app_c1_2" not in set_of("name", data)
+        assert "app_c1_2" not in set_of("registration_id", data)

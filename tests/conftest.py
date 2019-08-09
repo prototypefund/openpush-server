@@ -58,10 +58,14 @@ def setup_initial_data(db):
     c1 = Client(name="client_u1_1", user=u1, token="aaaaAAAAbbbbBBBB0000111-C1")
     c2 = Client(name="client_u1_2", user=u1, token="aaaaAAAAbbbbBBBB0000111-C2")
     a1 = Application(
-        name="app_c1_1", client=c1, routing_token="aaaaAAAAbbbbBBBB0000111-A1"
+        registration_id="app_c1_1",
+        client=c1,
+        routing_token="aaaaAAAAbbbbBBBB0000111-A1",
     )
     a2 = Application(
-        name="app_c1_2", client=c1, routing_token="aaaaAAAAbbbbBBBB0000111-A2"
+        registration_id="app_c1_2",
+        client=c1,
+        routing_token="aaaaAAAAbbbbBBBB0000111-A2",
     )
     m1 = Message(body="Body1", priority="NORMAL", subject="Subject1", target=a1)
     m2 = Message(body="Body2", priority="NORMAL", subject="Subject2", target=a1)
