@@ -122,9 +122,14 @@ class SSEClient:
                 # threads and session sharing across threads is apparently not good.
                 session_factory = db.sessionmaker(bind=db.get_engine(db.get_app()))
                 session = session_factory()
-                session.delete(session.query(Message).get(msgid))
-                session.commit()
-                session.close()
+                try:
+                    session.delete(session.query(Message).get(msgid))
+                    session.commit()
+                except SQLAlchemyError:
+                    pass
+                finally:
+                    session.close()
+
         except SQLAlchemyError as e:
             print(str(e))
         finally:

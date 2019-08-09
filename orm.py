@@ -1,3 +1,4 @@
+import enum
 from datetime import datetime
 
 from flask_sqlalchemy import SQLAlchemy
@@ -50,16 +51,24 @@ class Application(db.Model):
     __tablename__ = "application"
     __table_args__ = {"sqlite_autoincrement": True}
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80), nullable=False)
+    registration_id = db.Column(db.String(80), nullable=False)
     client_id = db.Column(db.Integer, db.ForeignKey("client.id"), nullable=False)
     client = db.relationship("Client", back_populates="applications")
     routing_token = db.Column(db.String(80), unique=True, nullable=False)
 
     def as_dict(self):
-        return {"id": self.id, "name": self.name, "routing_token": self.routing_token}
+        return {
+            "registration_id": self.registration_id,
+            "routing_token": self.routing_token,
+        }
 
     def __repr__(self):
-        return "<Application %r>" % self.name
+        return "<Application %r>" % self.registration_id
+
+
+class Priority(enum.Enum):
+    HIGH = 1
+    NORMAL = 2
 
 
 class Message(db.Model):
@@ -68,7 +77,7 @@ class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     subject = db.Column(db.String(80), nullable=False)
     body = db.Column(db.Text, nullable=False)
-    priority = db.Column(db.Integer, nullable=False)
+    priority = db.Column(db.Enum(Priority), nullable=False)
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     target_id = db.Column(db.Integer, db.ForeignKey("application.id"), nullable=False)
     target = db.relationship("Application", back_populates="")
@@ -77,7 +86,7 @@ class Message(db.Model):
         return {
             "subject": self.subject,
             "body": self.body,
-            "priority": self.priority,
+            "priority": self.priority.name,
             "routing_token": self.target.routing_token,
         }
 

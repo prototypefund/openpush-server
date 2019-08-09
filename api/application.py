@@ -41,12 +41,14 @@ def search(user):
 
 def post(body, user):
     client = user
-    name = body["name"]
+    registration_id = body["registration_id"]
     while True:
         token = secrets.token_urlsafe(20)
         if not Application.query.filter_by(routing_token=token).one_or_none():
             break
-    app = Application(name=name, client=client, routing_token=token)
+    app = Application(
+        registration_id=registration_id, client=client, routing_token=token
+    )
     try:
         db.session.add(app)
         db.session.commit()

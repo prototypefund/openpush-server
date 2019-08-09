@@ -402,17 +402,12 @@ components:
         
     Application:
       description: A registered application installed on a client
-      required: 
-        - id
-        - name
+      required:
+        - registration_id
         - routing_token
       properties:
-        id:
-          readOnly: true
-          type: integer
-          format: int64
-        name:
-          example: "riot-android"
+        registration_id:
+          example: "XXAAj76gkjlsfdhalSKL"
           type: string
         routing_token:
           readOnly: true
@@ -423,10 +418,11 @@ components:
     AppRegistration:
       description: Data for registering a new App
       required:
-        - name
+        - registration_id
       properties:
-        name:
-          example: "riot-android"
+        registration_id:
+          description: Token with which the pushclient can identify the target application, so it doesn't have to store routing token.
+          example: "XXAAj76gkjlsfdhalSKL"
           type: string
 
     ClientRegistration:
