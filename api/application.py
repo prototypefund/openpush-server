@@ -49,7 +49,7 @@ def post(body, user):
     ).one_or_none():
         return problem(400, "Bad Request", "registration_id already exists")
 
-    # Generate globally (for this pushserver instance) unique routing token
+    # Generate a globally (for this pushserver instance) unique routing token
     while True:
         token = secrets.token_urlsafe(20)
         if not Application.query.filter_by(routing_token=token).one_or_none():

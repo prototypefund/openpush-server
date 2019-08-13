@@ -8,6 +8,8 @@ from sqlalchemy.orm.exc import NoResultFound
 import configs
 from orm import db, User
 
+API_VERSION = "0.1.0"
+
 
 def create_app(config_object=configs.ProdConfig):
     app = connexion.App(__name__)

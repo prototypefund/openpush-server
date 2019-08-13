@@ -8,6 +8,19 @@ security:
   - basic_auth: []
 
 paths:
+  /version:
+    get:
+      security: []
+      tags:
+        - version
+      summary: Return the server api version.
+      responses:
+        '200':
+          description: Server api version.
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/Version"
   /user:
     get:
       tags:
@@ -494,3 +507,11 @@ components:
           type: string
         type:
           type: string
+
+    Version:
+      required:
+        - version
+      properties:
+        version:
+          type: string
+          example: 0.1.1
