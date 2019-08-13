@@ -4,6 +4,8 @@ import queue
 import flask
 from connexion import NoContent
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm.exc import NoResultFound
+
 
 from orm import db, Message, Application
 
@@ -39,10 +41,17 @@ def find_connected_client(app):
     return None
 
 
-def post(body, user):
-    app = user
+def post(body):
     try:
-        msgbody = body["body"]
+        routing_token = body["token"]
+    except KeyError:
+        return NoContent, 400
+    try:
+        app = Application.query.filter_by(routing_token=routing_token).one()
+    except NoResultFound:
+        return NoContent, 400
+    try:
+        data = body["data"]
     except KeyError:
         return NoContent, 400
     try:
@@ -50,10 +59,20 @@ def post(body, user):
     except KeyError:
         priority = "NORMAL"
     try:
-        subject = body["subject"]
+        time_to_live = body["time_to_live"]
     except KeyError:
-        subject = ""
-    message = Message(subject=subject, priority=priority, body=msgbody, target=app)
+        time_to_live = "2419200"
+    try:
+        collapse_key = body["collapse_key"]
+    except KeyError:
+        collapse_key = None
+    message = Message(
+        data=str(data),
+        priority=priority,
+        time_to_live=time_to_live,
+        collapse_key=collapse_key,
+        target=app,
+    )
     try:
         db.session.add(message)
         db.session.commit()

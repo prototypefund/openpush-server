@@ -1,6 +1,6 @@
 from sqlalchemy.orm.exc import NoResultFound
 
-from orm import User, Client, Application
+from orm import User, Client
 
 
 def basic_auth(username, password, required_scopes=None):
@@ -21,11 +21,3 @@ def clientkey_auth(apiKey, required_scopes=None):
     except NoResultFound:
         return None
     return {"sub": client}
-
-
-def routing_token_auth(apiKey, required_scopes=None):
-    try:
-        app = Application.query.filter_by(routing_token=apiKey).one()
-    except NoResultFound:
-        return None
-    return {"sub": app}

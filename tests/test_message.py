@@ -1,33 +1,31 @@
 from orm import Message
 
 
-# Want to test for:
-# * No messages are ever lost
-# * messages go to the correct client
-# * client only connected once
-
-
 class TestMessage:
     def test_send(self, testapp, db):
         # minimal fields set
         testapp.post_json(
-            "/message",
-            {"body": "Message1"},
-            headers={"X-Openpush-Key": "aaaaAAAAbbbbBBBB0000111-A1"},
+            "/message", {"token": "aaaaAAAAbbbbBBBB0000111-A1", "data": {}}
         )
         # everything set
         testapp.post_json(
             "/message",
-            {"body": "Message2", "priority": "HIGH", "subject": "subject"},
-            headers={"X-Openpush-Key": "aaaaAAAAbbbbBBBB0000111-A1"},
+            {
+                "token": "aaaaAAAAbbbbBBBB0000111-A1",
+                "data": {"foo": "bar"},
+                "priority": "HIGH",
+                "collapse_key": "foobar",
+                "time_to_live": 100,
+            },
         )
         assert len(db.session.query(Message).all()) == 4
-        # missing body
+        # missing token
+        res = testapp.post_json("/message", {"data": {}}, expect_errors=True)
+        assert res.status_int == 400
+        assert len(db.session.query(Message).all()) == 4
+        # missing data
         res = testapp.post_json(
-            "/message",
-            {"priority": "HIGH", "subject": "subject"},
-            expect_errors=True,
-            headers={"X-Openpush-Key": "aaaaAAAAbbbbBBBB0000111-A1"},
+            "/message", {"token": "aaaaAAAAbbbbBBBB0000111-A1"}, expect_errors=True
         )
         assert res.status_int == 400
         assert len(db.session.query(Message).all()) == 4

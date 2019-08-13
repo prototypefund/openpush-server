@@ -325,8 +325,7 @@ paths:
     
   /message:
     post:
-      security:
-        - routing_token: []
+      security: []
       summary: Post a message.
       tags: [message]
       requestBody:
@@ -373,11 +372,6 @@ components:
       name: X-Openpush-Key
       in: header
       x-apikeyInfoFunc: auth.clientkey_auth
-    routing_token:
-      type: apiKey
-      name: X-Openpush-Key
-      in: header
-      x-apikeyInfoFunc: auth.routing_token_auth
     basic_auth:
       type: http
       scheme: basic
@@ -471,26 +465,36 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Application"
-
-    Pushtoken:
-      description: Token to target a mobile application.
-      example: "8904j76gkjlsfdhalSKL"
-      type: string
       
     Message:
-      required: 
-        - body
+      required:
+        - token
+        - data
       properties:
-        subject:
-          example: "Message Subject"
+        token:
           type: string
-        body:
-          example: "Long message text goes here..."
-          type: string
+          example: "8904j76gkjlsfdhalSKL"
+          description: Token to target a mobile application.
+        data:
+          description: Key value pairs to be delivered to the targeted application.
+          example:
+            title: "New Message"
+            body: "You got a new message!"
+            foo: bar
+          type: object
+          additionalProperties: {}
         priority:
+          description: (currently unused)
           type: string
           enum: [NORMAL, HIGH]
-          
+        time_to_live:
+          type: integer
+          example: 2419200
+          description: (currently unused) How long to store the message (in seconds) for offline devices
+        collapse_key:
+          type: string
+          description: (currently unused) Store only one message per collapse_key, set to something different to store multiple messages
+
     Error:
       required:
         - detail

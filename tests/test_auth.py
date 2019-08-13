@@ -31,31 +31,10 @@ class TestAuth:
         res = testapp.get("/application", expect_errors=True)
         assert res.status_int == 401
 
-    def test_app_auth_success_bad_request(self, testapp):
-        res = testapp.post(
-            "/message",
-            expect_errors=True,
-            headers={"X-Openpush-Key": "aaaaAAAAbbbbBBBB0000111-A1"},
-        )
-        # 400 means authentication passed but empty body is still invalid
+    def test_message_noauth(self, testapp):
+        res = testapp.post("/message", expect_errors=True)
         assert res.status_int == 400
 
-    def test_app_auth_success(self, testapp):
-        res = testapp.post_json(
-            "/message",
-            {"body": "."},
-            headers={"X-Openpush-Key": "aaaaAAAAbbbbBBBB0000111-A1"},
-        )
+    def test_version_noauth(self, testapp):
+        res = testapp.get("/version")
         assert res.status_int == 200
-
-    def test_app_auth_fail(self, testapp):
-        res = testapp.post(
-            "/message",
-            expect_errors=True,
-            headers={"X-Openpush-Key": "aaaaAAAAbbbbBBBBINVALID-XX"},
-        )
-        assert res.status_int == 401
-
-    def test_app_noauth(self, testapp):
-        res = testapp.post("/message", expect_errors=True)
-        assert res.status_int == 401

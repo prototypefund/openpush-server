@@ -75,12 +75,13 @@ class Message(db.Model):
     __tablename__ = "message"
     __table_args__ = {"sqlite_autoincrement": True}
     id = db.Column(db.Integer, primary_key=True)
-    subject = db.Column(db.String(80), nullable=False)
-    body = db.Column(db.Text, nullable=False)
+    data = db.Column(db.Text, nullable=False)
     priority = db.Column(db.Enum(Priority), nullable=False)
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    time_to_live = db.Column(db.Integer, nullable=False)
+    collapse_key = db.Column(db.String(100))
     target_id = db.Column(db.Integer, db.ForeignKey("application.id"), nullable=False)
-    target = db.relationship("Application", back_populates="")
+    target = db.relationship("Application")
 
     def as_dict(self):
         return {

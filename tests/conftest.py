@@ -67,8 +67,12 @@ def setup_initial_data(db):
         client=c1,
         routing_token="aaaaAAAAbbbbBBBB0000111-A2",
     )
-    m1 = Message(body="Body1", priority="NORMAL", subject="Subject1", target=a1)
-    m2 = Message(body="Body2", priority="NORMAL", subject="Subject2", target=a1)
+    m1 = Message(
+        data='{"name":"message1"}', priority="NORMAL", time_to_live=0, target=a1
+    )
+    m2 = Message(
+        data='{"name":"message2"}', priority="NORMAL", time_to_live=0, target=a1
+    )
 
     db.session.add_all([u1, u2, c1, c2, a1, a2, m1, m2])
     db.session.commit()
