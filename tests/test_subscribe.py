@@ -1,4 +1,6 @@
 import json
+import threading
+import time
 
 import pycurl
 import pytest
@@ -6,11 +8,6 @@ import sseclient
 from utils import CurlClient
 
 from orm import Message
-
-
-# Want to test for:
-# * No messages are ever lost
-# * messages go to the correct client
 
 
 class TestSubscribe:
@@ -79,3 +76,42 @@ class TestSubscribe:
             next(client2.events())
         c.shutdown()
         c2.shutdown()
+
+    def test_concurrent_receive(self, testserver, testapp, db):
+        # Let's send lot's of messages while two clients reconnect concurrently
+        # and make sure every message is delivered only once to either client.
+        url = testserver.url + "/subscribe"
+        c = CurlClient(url, "aaaaAAAAbbbbBBBB0000111-C1")
+        # sc2 = CurlClient(url, "aaaaAAAAbbbbBBBB0000111-C1")
+
+        class ReconnectingCurlClient(threading.Thread):
+            def __init__(self, curl):
+                threading.Thread.__init__(self)
+                self.c = curl
+                self.stop = threading.Event()
+
+            def run(self):
+                while not self.stop.is_set():
+                    self.c.get()
+                    if self.c.is_finished:
+                        self.c.restart()
+                    time.sleep(1)
+
+        # t1 = ReconnectingCurlClient(c)
+        # t2 = ReconnectingCurlClient(c2)
+        # t1.start()
+        # t2.start()
+        c.get()
+        for i in range(50):
+            testapp.post_json(
+                "/message",
+                {"body": "Message" + str(i)},
+                headers={"X-Openpush-Key": "aaaaAAAAbbbbBBBB0000111-A1"},
+            )
+            # time.sleep(0.005)
+
+        # time.sleep(3)
+        # t1.stop.set()
+        # t2.stop.set()
+        # c.get(3)
+        assert len(db.session.query(Message).all()) == 0

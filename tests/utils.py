@@ -11,19 +11,14 @@ def set_of(attr: str = None, data: dict = None):
 class CurlClient:
     def __init__(self, url, access_key, multi=None):
         self.buffer = BytesIO()
-        c = pycurl.Curl()
-        c.setopt(c.URL, url)
-        c.setopt(
-            c.HTTPHEADER, ["X-Openpush-Key: " + access_key, "accept: text/event-stream"]
-        )
-        c.setopt(c.WRITEDATA, self.buffer)
-        self.easy = c
-
+        self.url = url
+        self.access_key = access_key
+        self.easy = pycurl.Curl()
         if multi:
             self.multi = multi
         else:
             self.multi = pycurl.CurlMulti()
-        self.multi.add_handle(c)
+        self.curl_init()
 
     def get(self, timeout=0.1):
         """This calls get on the associated multi-handle. So it processes all
@@ -46,6 +41,20 @@ class CurlClient:
                 if ret != pycurl.E_CALL_MULTI_PERFORM:
                     break
         self.buffer.seek(readpopinter)
+
+    def curl_init(self):
+        self.easy.reset()
+        self.easy.setopt(self.easy.URL, self.url)
+        self.easy.setopt(
+            self.easy.HTTPHEADER,
+            ["X-Openpush-Key: " + self.access_key, "accept: text/event-stream"],
+        )
+        self.easy.setopt(self.easy.WRITEDATA, self.buffer)
+        self.multi.add_handle(self.easy)
+
+    def restart(self):
+        self.multi.remove_handle(self.easy)
+        self.curl_init()
 
     def get_finished(self):
         return self.multi.info_read()[1]
