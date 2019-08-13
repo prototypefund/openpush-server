@@ -84,12 +84,7 @@ class Message(db.Model):
     target = db.relationship("Application")
 
     def as_dict(self):
-        return {
-            "subject": self.subject,
-            "body": self.body,
-            "priority": self.priority.name,
-            "registration_id": self.target.registration_id,
-        }
+        return {"data": self.data, "registration_id": self.target.registration_id}
 
     def __repr__(self):
         return "<Message %r: %r>" % (self.subject, self.body)

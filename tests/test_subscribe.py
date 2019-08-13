@@ -22,26 +22,24 @@ class TestSubscribe:
         client = sseclient.SSEClient(c.buffer)
         m1 = json.loads(next(client.events()).data)
         m2 = json.loads(next(client.events()).data)
-        assert m1["body"] == "Body1"
-        assert m2["body"] == "Body2"
+        assert m1["data"] == '{"name":"message1"}'
+        assert m2["data"] == '{"name":"message2"}'
         assert len(db.session.query(Message).all()) == 0
 
         # receiving new messages
         testapp.post_json(
             "/message",
-            {"body": "Message1"},
-            headers={"X-Openpush-Key": "aaaaAAAAbbbbBBBB0000111-A1"},
+            {"token": "aaaaAAAAbbbbBBBB0000111-A1", "data": {"name": "Message1"}},
         )
         c.get()
-        assert json.loads(next(client.events()).data)["body"] == "Message1"
+        assert json.loads(next(client.events()).data)["data"] == "{'name': 'Message1'}"
         assert len(db.session.query(Message).all()) == 0
         # messages are stored after client disconnect
         client.close()
         c.shutdown()
         testapp.post_json(
             "/message",
-            {"body": "Message1"},
-            headers={"X-Openpush-Key": "aaaaAAAAbbbbBBBB0000111-A1"},
+            {"token": "aaaaAAAAbbbbBBBB0000111-A1", "data": {"name": "Message1"}},
         )
         assert len(db.session.query(Message).all()) == 1
 
@@ -61,8 +59,7 @@ class TestSubscribe:
         """Test connection by different clients"""
         testapp.post_json(
             "/message",
-            {"body": "Message1"},
-            headers={"X-Openpush-Key": "aaaaAAAAbbbbBBBB0000111-A1"},
+            {"token": "aaaaAAAAbbbbBBBB0000111-A1", "data": {"name": "Message1"}},
         )
         url = testserver.url + "/subscribe"
         multi = pycurl.CurlMulti()
