@@ -73,7 +73,6 @@ class Priority(enum.Enum):
 
 class Message(db.Model):
     __tablename__ = "message"
-    __table_args__ = {"sqlite_autoincrement": True}
     id = db.Column(db.Integer, primary_key=True)
     data = db.Column(db.Text, nullable=False)
     priority = db.Column(db.Enum(Priority), nullable=False)
