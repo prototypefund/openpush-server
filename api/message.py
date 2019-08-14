@@ -7,7 +7,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm.exc import NoResultFound
 
 
-from orm import db, Message, Application
+from orm import db, Message, Application, Priority
 
 connected = []
 
@@ -55,9 +55,9 @@ def post(body):
     except KeyError:
         return NoContent, 400
     try:
-        priority = body["priority"]
+        priority = Priority(body["priority"])
     except KeyError:
-        priority = "NORMAL"
+        priority = Priority.NORMAL
     try:
         time_to_live = body["time_to_live"]
     except KeyError:
@@ -117,7 +117,7 @@ class SSEClient:
         self.queue.put(messageid)
 
     def generator(self):
-        # make sure headers are sent immeaditely to the client
+        # make sure headers are sent immediately to the client
         yield ""
         try:
             while True:

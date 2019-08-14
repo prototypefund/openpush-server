@@ -67,8 +67,8 @@ class Application(db.Model):
 
 
 class Priority(enum.Enum):
-    HIGH = 1
-    NORMAL = 2
+    HIGH = "normal"
+    NORMAL = "high"
 
 
 class Message(db.Model):

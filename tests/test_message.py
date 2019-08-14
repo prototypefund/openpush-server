@@ -1,4 +1,4 @@
-from orm import Message
+from orm import Message, Priority
 
 
 class TestMessage:
@@ -13,7 +13,7 @@ class TestMessage:
             {
                 "token": "aaaaAAAAbbbbBBBB0000111-A1",
                 "data": {"foo": "bar"},
-                "priority": "HIGH",
+                "priority": Priority.HIGH.value,
                 "collapse_key": "foobar",
                 "time_to_live": 100,
             },

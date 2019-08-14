@@ -4,7 +4,7 @@ from pytest_localserver.http import WSGIServer
 
 from app import create_app
 from configs import TestConfig
-from orm import User, Client, Application, Message
+from orm import User, Client, Application, Message, Priority
 from orm import db as _db
 
 
@@ -68,10 +68,10 @@ def setup_initial_data(db):
         routing_token="aaaaAAAAbbbbBBBB0000111-A2",
     )
     m1 = Message(
-        data='{"name":"message1"}', priority="NORMAL", time_to_live=0, target=a1
+        data='{"name":"message1"}', priority=Priority.NORMAL, time_to_live=0, target=a1
     )
     m2 = Message(
-        data='{"name":"message2"}', priority="NORMAL", time_to_live=0, target=a1
+        data='{"name":"message2"}', priority=Priority.NORMAL, time_to_live=0, target=a1
     )
 
     db.session.add_all([u1, u2, c1, c2, a1, a2, m1, m2])

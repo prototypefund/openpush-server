@@ -17,7 +17,7 @@ class DevConfig(Config):
     ENV = "development"
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = "sqlite:///dev.db"
-    SQLALCHEMY_ECHO = True
+    # SQLALCHEMY_ECHO = True
     USER = "admin"
     PASS = "admin"
 

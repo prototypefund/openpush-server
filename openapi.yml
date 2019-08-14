@@ -486,7 +486,7 @@ components:
         priority:
           description: (currently unused)
           type: string
-          enum: [NORMAL, HIGH]
+          enum: [normal, high]
         time_to_live:
           type: integer
           example: 2419200
